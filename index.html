@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f17" />
+
+  <!-- SEO / Preview -->
+  <title>픽셀 드래곤 - 알에서 궁극체까지</title>
+  <meta name="description" content="픽셀 감성 드래곤을 알부터 성장·진화시키는 방치형 육성 게임. 지금 바로 시작하세요." />
+  <meta property="og:title" content="픽셀 드래곤" />
+  <meta property="og:description" content="알에서 시작해 성장·진화! 픽셀 감성 드래곤 육성 게임" />
+  <meta property="og:type" content="website" />
+  <!-- og:image는 실제 이미지 URL로 교체 -->
+  <!-- <meta property="og:image" content="https://example.com/og.png" /> -->
+
+  <!-- (선택) Google tag (gtag.js) - 전환 추적을 쓸 때만 사용
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-XXXXXXXXXX');
+  </script>
+  -->
+
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --card:#111827;
+      --muted:#93a4b8;
+      --text:#e8eef7;
+      --accent:#4ade80;
+      --accent2:#60a5fa;
+      --danger:#fb7185;
+      --ring: rgba(96,165,250,.35);
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+      --max: 980px;
+      --pad: 18px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, "Apple SD Gothic Neo", sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 20% 10%, rgba(96,165,250,.16), transparent 55%),
+        radial-gradient(800px 500px at 80% 20%, rgba(74,222,128,.12), transparent 55%),
+        radial-gradient(900px 700px at 50% 120%, rgba(251,113,133,.10), transparent 55%),
+        var(--bg);
+      line-height:1.45;
+    }
+
+    a{color:inherit; text-decoration:none}
+    .wrap{min-height:100%; display:flex; flex-direction:column}
+    .topbar{
+      padding: 14px var(--pad);
+      display:flex;
+      justify-content:center;
+    }
+    .topbar-inner{
+      width:min(var(--max), calc(100% - 2*var(--pad)));
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; letter-spacing:.2px;
+    }
+    .logo{
+      width:34px; height:34px; border-radius:10px;
+      background: linear-gradient(135deg, rgba(96,165,250,.9), rgba(74,222,128,.9));
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      position:relative;
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:7px;
+      border-radius:8px;
+      background: rgba(11,15,23,.35);
+      border:1px solid rgba(255,255,255,.14);
+    }
+    .pill{
+      font-size:12px;
+      padding:7px 10px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:999px;
+      color:var(--muted);
+      background: rgba(17,24,39,.5);
+      backdrop-filter: blur(8px);
+      white-space:nowrap;
+    }
+
+    main{
+      flex:1;
+      display:flex;
+      justify-content:center;
+      padding: 10px var(--pad) 26px;
+    }
+    .container{
+      width:min(var(--max), calc(100% - 2*var(--pad)));
+      display:grid;
+      gap:16px;
+      grid-template-columns: 1.1fr .9fr;
+      align-items:stretch;
+    }
+    @media (max-width: 860px){
+      .container{grid-template-columns:1fr}
+    }
+
+    .card{
+      background: rgba(17,24,39,.7);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), transparent 40%);
+      pointer-events:none;
+    }
+
+    .hero{
+      padding: 22px 22px 18px;
+    }
+    .kicker{
+      display:inline-flex; gap:8px; align-items:center;
+      font-size:12px;
+      color: var(--muted);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(11,15,23,.35);
+      padding: 7px 10px;
+      border-radius:999px;
+      margin-bottom: 12px;
+    }
+    h1{
+      margin: 0 0 10px;
+      font-size: clamp(26px, 4.1vw, 40px);
+      line-height:1.12;
+      letter-spacing:-.4px;
+    }
+    .sub{
+      margin:0 0 16px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .cta-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 14px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      border-radius: 14px;
+      padding: 12px 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(11,15,23,.35);
+      color: var(--text);
+      font-weight: 800;
+      cursor:pointer;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease, background .12s ease;
+      user-select:none;
+      min-width: 170px;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(96,165,250,.45);
+      box-shadow: 0 0 0 6px var(--ring);
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(96,165,250,.95), rgba(74,222,128,.95));
+      color:#07101a;
+      border-color: rgba(255,255,255,.18);
+    }
+    .btn.primary:hover{
+      border-color: rgba(255,255,255,.26);
+      box-shadow: 0 0 0 6px rgba(74,222,128,.22);
+    }
+    .btn .small{
+      font-size:12px;
+      font-weight:700;
+      opacity:.9;
+    }
+
+    .badges{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top: 14px;
+    }
+    .badge{
+      font-size:12px;
+      color: var(--muted);
+      padding: 7px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(11,15,23,.25);
+    }
+
+    .features{
+      padding: 18px 22px 22px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 560px){
+      .features{grid-template-columns:1fr}
+    }
+    .feat{
+      padding: 14px 14px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(11,15,23,.25);
+    }
+    .feat .t{
+      font-weight: 900;
+      margin:0 0 6px;
+      font-size:14px;
+    }
+    .feat .d{
+      margin:0;
+      color: var(--muted);
+      font-size:13px;
+    }
+
+    .side{
+      padding: 22px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .media{
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        linear-gradient(135deg, rgba(96,165,250,.12), rgba(74,222,128,.10)),
+        rgba(11,15,23,.25);
+      aspect-ratio: 16/10;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .media .ph{
+      text-align:center;
+      padding: 16px;
+      color: var(--muted);
+      font-size:13px;
+    }
+    .media .ph strong{color:var(--text)}
+    .media .hint{
+      display:inline-block;
+      margin-top: 8px;
+      font-size:12px;
+      opacity:.9;
+      border:1px dashed rgba(255,255,255,.20);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .mini{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .stat{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(11,15,23,.25);
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .stat .k{color:var(--muted); font-size:12px; margin-bottom:6px}
+    .stat .v{font-weight: 950; font-size:16px; letter-spacing:-.2px}
+    .fine{
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.5;
+      padding-top: 8px;
+    }
+
+    footer{
+      padding: 16px var(--pad) 22px;
+      display:flex;
+      justify-content:center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    footer .f{
+      width:min(var(--max), calc(100% - 2*var(--pad)));
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    footer a{opacity:.9}
+    footer a:hover{opacity:1; text-decoration:underline}
+    .sep{opacity:.35}
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand" aria-label="브랜드">
+        <div class="logo" aria-hidden="true"></div>
+        <div>픽셀 드래곤</div>
+      </div>
+      <div class="pill" id="sourcePill">광고 방문</div>
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      <!-- Left / Main pitch -->
+      <section class="card">
+        <div class="hero">
+          <div class="kicker">🟩 방치형 육성 · 🟦 픽셀 감성 · 🟥 진화의 재미</div>
+          <h1>알에서 시작해<br/>궁극체까지 진화시키는<br/>픽셀 드래곤 육성</h1>
+          <p class="sub">
+            짧게 접속해도 성장하는 드래곤.
+            수집, 성장, 진화의 순간을 가볍게 즐겨보세요.
+          </p>
+
+          <div class="cta-row">
+            <a class="btn primary" id="ctaInstall" href="#" rel="nofollow noopener">
+              <span>지금 설치하기</span>
+              <span class="small">Google Play</span>
+            </a>
+            <a class="btn" id="ctaMore" href="#features">
+              <span>더 알아보기</span>
+              <span class="small">기능 보기</span>
+            </a>
+          </div>
+
+          <div class="badges" aria-label="핵심 포인트">
+            <span class="badge">✅ 간단 조작</span>
+            <span class="badge">✅ 꾸준한 성장</span>
+            <span class="badge">✅ 레트로 도트</span>
+            <span class="badge">✅ 무료로 시작</span>
+          </div>
+        </div>
+
+        <div class="features" id="features">
+          <div class="feat">
+            <p class="t">알 → 성장 → 진화</p>
+            <p class="d">키우는 재미가 확실한 단계 성장 시스템.</p>
+          </div>
+          <div class="feat">
+            <p class="t">픽셀 감성 그래픽</p>
+            <p class="d">레트로 도트 분위기로 가볍게 몰입.</p>
+          </div>
+          <div class="feat">
+            <p class="t">방치형 육성</p>
+            <p class="d">바쁜 시간에도 조금씩 성장하는 구조.</p>
+          </div>
+          <div class="feat">
+            <p class="t">수집의 재미</p>
+            <p class="d">다양한 드래곤을 모으고 키워보세요.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right / Proof + media -->
+      <aside class="card">
+        <div class="side">
+          <div class="media" aria-label="스크린샷 영역">
+            <div class="ph">
+              <strong>여기에 스크린샷/영상 썸네일</strong><br/>
+              이미지로 교체하면 전환이 확 올라가요.
+              <div class="hint">assets/hero.jpg 로 연결 추천</div>
+            </div>
+          </div>
+
+          <div class="mini">
+            <div class="stat">
+              <div class="k">추천 플레이</div>
+              <div class="v">하루 5분</div>
+            </div>
+            <div class="stat">
+              <div class="k">포인트</div>
+              <div class="v">성장·진화·수집</div>
+            </div>
+          </div>
+
+          <div class="fine">
+            <div>※ 광고 클릭 후 설치를 유도하는 랜딩은 “과장/허위” 문구를 피하는 게 안전합니다.</div>
+            <div>※ 버튼 클릭 시 UTM 파라미터를 유지하여 캠페인 성과 측정이 가능합니다.</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="f">
+      <div>
+        © <span id="year"></span> Pixel Dragon
+        <span class="sep">·</span>
+        <a href="#" id="privacyLink">개인정보처리방침</a>
+      </div>
+      <div>
+        <a href="#" id="supportLink">고객센터</a>
+        <span class="sep">·</span>
+        <a href="#" id="storeLink">스토어 페이지</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // ==========
+  // 설정만 바꾸면 바로 사용 가능
+  // ==========
+  const CONFIG = {
+    appName: "픽셀 드래곤",
+    // 네 구글 플레이 링크로 교체
+    playStoreUrl: "https://play.google.com/store/apps/details?id=com.soo.pixeldragon",
+    // (선택) 개인정보처리방침 / 고객센터 URL
+    privacyUrl: "https://kimsurse89-blip.github.io/pixeldragon-go/", // 예시(이미 쓰는 GitHub Pages)
+    supportUrl: "https://kimsurse89-blip.github.io/pixeldragon-go/",
+  };
+
+  // URL 파라미터(utm_*)를 CTA 링크에 유지
+  function buildUrlWithUtm(baseUrl) {
+    try {
+      const current = new URL(window.location.href);
+      const base = new URL(baseUrl);
+      const keepKeys = ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","gclid","wbraid","gbraid"];
+      keepKeys.forEach(k => {
+        const v = current.searchParams.get(k);
+        if (v) base.searchParams.set(k, v);
+      });
+      return base.toString();
+    } catch {
+      return baseUrl;
+    }
+  }
+
+  // 클릭 트래킹(선택): gtag 이벤트 자리
+  function trackCta(label){
+    // gtag('event', 'conversion', { 'send_to': 'AW-XXXXXXXXXX/XXXXXXXXXXX' });
+    // gtag('event', 'click', { event_category: 'cta', event_label: label });
+    // 콘솔 로그로 대체
+    // console.log("CTA click:", label);
+  }
+
+  // UI 적용
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const storeUrl = buildUrlWithUtm(CONFIG.playStoreUrl);
+  const ctaInstall = document.getElementById("ctaInstall");
+  const storeLink = document.getElementById("storeLink");
+  ctaInstall.href = storeUrl;
+  ctaInstall.addEventListener("click", () => trackCta("install"));
+  storeLink.href = storeUrl;
+
+  const privacyLink = document.getElementById("privacyLink");
+  privacyLink.href = CONFIG.privacyUrl;
+
+  const supportLink = document.getElementById("supportLink");
+  supportLink.href = CONFIG.supportUrl;
+
+  // 유입 표시(있으면)
+  const u = new URL(window.location.href);
+  const src = u.searchParams.get("utm_source") || u.searchParams.get("gclid") ? "광고 유입" : "직접 방문";
+  const pill = document.getElementById("sourcePill");
+  pill.textContent = src;
+
+  // "더 알아보기" 스무스 스크롤
+  document.getElementById("ctaMore").addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("features").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+</script>
+</body>
+</html>
