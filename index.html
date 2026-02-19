@@ -113,9 +113,7 @@
       pointer-events:none;
     }
 
-    .hero{
-      padding: 22px 22px 18px;
-    }
+    .hero{ padding: 22px 22px 18px; }
     .kicker{
       display:inline-flex; gap:8px; align-items:center;
       font-size:12px;
@@ -174,11 +172,7 @@
       border-color: rgba(255,255,255,.26);
       box-shadow: 0 0 0 6px rgba(74,222,128,.22);
     }
-    .btn .small{
-      font-size:12px;
-      font-weight:700;
-      opacity:.9;
-    }
+    .btn .small{ font-size:12px; font-weight:700; opacity:.9; }
 
     .badges{
       display:flex;
@@ -201,25 +195,15 @@
       grid-template-columns: 1fr 1fr;
       gap:12px;
     }
-    @media (max-width: 560px){
-      .features{grid-template-columns:1fr}
-    }
+    @media (max-width: 560px){ .features{grid-template-columns:1fr} }
     .feat{
       padding: 14px 14px;
       border-radius: 14px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(11,15,23,.25);
     }
-    .feat .t{
-      font-weight: 900;
-      margin:0 0 6px;
-      font-size:14px;
-    }
-    .feat .d{
-      margin:0;
-      color: var(--muted);
-      font-size:13px;
-    }
+    .feat .t{ font-weight: 900; margin:0 0 6px; font-size:14px; }
+    .feat .d{ margin:0; color: var(--muted); font-size:13px; }
 
     .side{
       padding: 22px;
@@ -242,6 +226,7 @@
       overflow:hidden;
     }
 
+    /* Slider */
     .slider{ position:absolute; inset:0; }
     .slider img{
       position:absolute; inset:0;
@@ -419,23 +404,17 @@
       <aside class="card">
         <div class="side">
           <div class="media" aria-label="스크린샷 영역">
-            <div class="slider" id="slider">
-              <img id="slide0" alt="스크린샷 1">
-              <img id="slide1" alt="스크린샷 2">
-            </div>
+            <div class="slider" id="slider"></div>
 
             <div class="slider-nav" aria-label="스크린샷 넘기기">
               <button class="nav-btn" id="prevBtn" type="button" aria-label="이전">‹</button>
-              <div class="dots" id="dots">
-                <button class="dot" id="dot0" type="button" aria-label="1번 이미지"></button>
-                <button class="dot" id="dot1" type="button" aria-label="2번 이미지"></button>
-              </div>
+              <div class="dots" id="dots"></div>
               <button class="nav-btn" id="nextBtn" type="button" aria-label="다음">›</button>
             </div>
 
             <div class="fallback" id="sliderFallback" style="display:none;">
               <strong>스크린샷 파일을 못 찾았어요</strong><br/>
-              레포에 <b>tree5.png</b>, <b>tree6.png</b>,<b>hero.jpg</b> 업로드하면 자동 표시됩니다.
+              레포에 <b>hero.jpg</b>, <b>tree5.png</b>, <b>tree6.png</b> 업로드하면 자동 표시됩니다.
               <div class="hint">landing 레포 루트에 업로드</div>
             </div>
           </div>
@@ -482,7 +461,9 @@
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.soo.pixeldragon",
     privacyUrl: "https://kimsurse89-blip.github.io/pixeldragon-go/",
     supportUrl: "https://kimsurse89-blip.github.io/pixeldragon-go/",
-    sliderImages: ["hero.jpg","tree5.png", "tree6.png"],
+    // ✅ 3장 슬라이더: 레포 루트에 그대로 업로드하면 됨
+    sliderImages: ["hero.jpg", "tree5.png", "tree6.png"],
+    // 자동 슬라이드 (ms) - 0이면 자동 넘김 OFF
     sliderAutoplayMs: 2600
   };
 
@@ -521,62 +502,82 @@
     });
   }
 
+  // 유입 표시
   const u = new URL(window.location.href);
   const hasAds = !!(u.searchParams.get("gclid") || u.searchParams.get("wbraid") || u.searchParams.get("gbraid"));
   const src = u.searchParams.get("utm_source") || (hasAds ? "Google Ads" : "직접 방문");
   document.getElementById("sourcePill").textContent = src;
 
-  const imgs = CONFIG.sliderImages || [];
-  const slideEls = [document.getElementById("slide0"), document.getElementById("slide1")];
-  const dots = [document.getElementById("dot0"), document.getElementById("dot1")];
+  // --- Slider (N장 지원) ---
+  const slider = document.getElementById("slider");
+  const dotsWrap = document.getElementById("dots");
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
   const fallback = document.getElementById("sliderFallback");
 
+  const imgs = (CONFIG.sliderImages || []).filter(Boolean);
   let idx = 0;
   let timer = null;
-  let finishCount = 0;
+  let doneCount = 0;
+  let okCount = 0;
 
-  function setActive(i){
-    idx = (i + 2) % 2;
-    slideEls.forEach((el, n) => el.classList.toggle("active", n === idx));
-    dots.forEach((el, n) => el.classList.toggle("active", n === idx));
-  }
-
-  function next(){ setActive(idx + 1); }
-  function prev(){ setActive(idx - 1); }
-
-  function startAutoplay(){
-    stopAutoplay();
-    if (!CONFIG.sliderAutoplayMs || CONFIG.sliderAutoplayMs <= 0) return;
-    timer = setInterval(next, CONFIG.sliderAutoplayMs);
-  }
   function stopAutoplay(){
     if (timer) { clearInterval(timer); timer = null; }
   }
+  function startAutoplay(){
+    stopAutoplay();
+    if (!CONFIG.sliderAutoplayMs || CONFIG.sliderAutoplayMs <= 0) return;
+    timer = setInterval(() => setActive(idx + 1), CONFIG.sliderAutoplayMs);
+  }
 
-  prevBtn.addEventListener("click", () => { prev(); startAutoplay(); });
-  nextBtn.addEventListener("click", () => { next(); startAutoplay(); });
-  dots[0].addEventListener("click", () => { setActive(0); startAutoplay(); });
-  dots[1].addEventListener("click", () => { setActive(1); startAutoplay(); });
+  function setActive(i){
+    if (imgs.length === 0) return;
+    idx = (i + imgs.length) % imgs.length;
+    document.querySelectorAll("#slider img").forEach((el, n) => el.classList.toggle("active", n === idx));
+    document.querySelectorAll("#dots .dot").forEach((el, n) => el.classList.toggle("active", n === idx));
+  }
 
-  slideEls.forEach((el, i) => {
-    el.src = imgs[i] || "";
-    el.addEventListener("load", () => {
-      finishCount++;
-      fallback.style.display = "none";
+  function buildSlider(){
+    slider.innerHTML = "";
+    dotsWrap.innerHTML = "";
+
+    if (imgs.length === 0){
+      fallback.style.display = "block";
+      return;
+    }
+
+    imgs.forEach((src, i) => {
+      const img = document.createElement("img");
+      img.alt = `스크린샷 ${i+1}`;
+      img.src = src;
+      img.addEventListener("load", () => {
+        doneCount++;
+        okCount++;
+        fallback.style.display = "none";
+      });
+      img.addEventListener("error", () => {
+        doneCount++;
+        // 모두 실패하면 fallback
+        if (doneCount >= imgs.length && okCount === 0) fallback.style.display = "block";
+      });
+      slider.appendChild(img);
+
+      const dot = document.createElement("button");
+      dot.className = "dot";
+      dot.type = "button";
+      dot.setAttribute("aria-label", `${i+1}번 이미지`);
+      dot.addEventListener("click", () => { setActive(i); startAutoplay(); });
+      dotsWrap.appendChild(dot);
     });
-    el.addEventListener("error", () => {
-      finishCount++;
-      if (finishCount >= 2) {
-        const bothFailed = slideEls.every(s => s.naturalWidth === 0);
-        if (bothFailed) fallback.style.display = "block";
-      }
-    });
-  });
 
-  setActive(0);
-  startAutoplay();
+    setActive(0);
+    startAutoplay();
+  }
+
+  prevBtn.addEventListener("click", () => { setActive(idx - 1); startAutoplay(); });
+  nextBtn.addEventListener("click", () => { setActive(idx + 1); startAutoplay(); });
+
+  buildSlider();
 </script>
 </body>
 </html>
