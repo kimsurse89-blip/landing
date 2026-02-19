@@ -8,11 +8,11 @@
   <!-- SEO / Preview -->
   <title>픽셀 드래곤 - 알에서 궁극체까지</title>
   <meta name="description" content="픽셀 감성 드래곤을 알부터 성장·진화시키는 방치형 육성 게임. 지금 바로 시작하세요." />
-  <meta property="og:title" content="픽셀 드래곤" />
-  <meta property="og:description" content="알에서 시작해 성장·진화! 픽셀 감성 드래곤 육성 게임" />
+  <meta property="og:title" content="픽셀 드래곤 - 알에서 궁극체까지" />
+  <meta property="og:description" content="픽셀 감성 드래곤을 알부터 성장·진화시키는 방치형 육성 게임. 지금 바로 시작하세요." />
   <meta property="og:type" content="website" />
-  <!-- og:image는 실제 이미지 URL로 교체 -->
-  <!-- <meta property="og:image" content="https://example.com/og.png" /> -->
+  <!-- (선택) OG 이미지: 실제 이미지 URL로 교체 -->
+  <!-- <meta property="og:image" content="https://kimsurse89-blip.github.io/landing/og.png" /> -->
 
   <!-- (선택) Google tag (gtag.js) - 전환 추적을 쓸 때만 사용
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXXX"></script>
@@ -30,9 +30,6 @@
       --card:#111827;
       --muted:#93a4b8;
       --text:#e8eef7;
-      --accent:#4ade80;
-      --accent2:#60a5fa;
-      --danger:#fb7185;
       --ring: rgba(96,165,250,.35);
       --shadow: 0 18px 60px rgba(0,0,0,.45);
       --radius: 18px;
@@ -257,13 +254,19 @@
       position:relative;
       overflow:hidden;
     }
-    .media .ph{
+    .media img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .media .fallback{
       text-align:center;
       padding: 16px;
       color: var(--muted);
       font-size:13px;
     }
-    .media .ph strong{color:var(--text)}
+    .media .fallback strong{color:var(--text)}
     .media .hint{
       display:inline-block;
       margin-top: 8px;
@@ -329,7 +332,6 @@
 
   <main>
     <div class="container">
-      <!-- Left / Main pitch -->
       <section class="card">
         <div class="hero">
           <div class="kicker">🟩 방치형 육성 · 🟦 픽셀 감성 · 🟥 진화의 재미</div>
@@ -378,14 +380,15 @@
         </div>
       </section>
 
-      <!-- Right / Proof + media -->
       <aside class="card">
         <div class="side">
           <div class="media" aria-label="스크린샷 영역">
-            <div class="ph">
-              <strong>여기에 스크린샷/영상 썸네일</strong><br/>
-              이미지로 교체하면 전환이 확 올라가요.
-              <div class="hint">assets/hero.jpg 로 연결 추천</div>
+            <img id="heroImg" src="hero.jpg" alt="픽셀 드래곤 스크린샷"
+                 onerror="this.style.display='none'; document.getElementById('heroFallback').style.display='block';">
+            <div class="fallback" id="heroFallback" style="display:none;">
+              <strong>스크린샷이 아직 없어요</strong><br/>
+              레포에 <b>hero.jpg</b> 파일을 업로드하면 자동으로 표시됩니다.
+              <div class="hint">landing 레포 루트에 업로드</div>
             </div>
           </div>
 
@@ -401,8 +404,8 @@
           </div>
 
           <div class="fine">
-            <div>※ 광고 클릭 후 설치를 유도하는 랜딩은 “과장/허위” 문구를 피하는 게 안전합니다.</div>
-            <div>※ 버튼 클릭 시 UTM 파라미터를 유지하여 캠페인 성과 측정이 가능합니다.</div>
+            <div>※ 과장/허위 문구는 광고 승인에 불리할 수 있어요.</div>
+            <div>※ UTM/gclid를 유지해 캠페인 성과 측정이 가능합니다.</div>
           </div>
         </div>
       </aside>
@@ -426,20 +429,15 @@
 </div>
 
 <script>
-  // ==========
-  // 설정만 바꾸면 바로 사용 가능
-  // ==========
   const CONFIG = {
     appName: "픽셀 드래곤",
-    // 네 구글 플레이 링크로 교체
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.soo.pixeldragon",
-    // (선택) 개인정보처리방침 / 고객센터 URL
-    privacyUrl: "https://kimsurse89-blip.github.io/pixeldragon-go/", // 예시(이미 쓰는 GitHub Pages)
+    privacyUrl: "https://kimsurse89-blip.github.io/pixeldragon-go/",
     supportUrl: "https://kimsurse89-blip.github.io/pixeldragon-go/",
+    heroImagePath: "hero.jpg" // 예: "assets/hero.jpg"
   };
 
-  // URL 파라미터(utm_*)를 CTA 링크에 유지
-  function buildUrlWithUtm(baseUrl) {
+  function buildUrlWithTracking(baseUrl) {
     try {
       const current = new URL(window.location.href);
       const base = new URL(baseUrl);
@@ -454,41 +452,38 @@
     }
   }
 
-  // 클릭 트래킹(선택): gtag 이벤트 자리
   function trackCta(label){
-    // gtag('event', 'conversion', { 'send_to': 'AW-XXXXXXXXXX/XXXXXXXXXXX' });
-    // gtag('event', 'click', { event_category: 'cta', event_label: label });
-    // 콘솔 로그로 대체
-    // console.log("CTA click:", label);
+    // 전환추적 사용 시 여기서 gtag 이벤트 호출
   }
 
-  // UI 적용
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  const storeUrl = buildUrlWithUtm(CONFIG.playStoreUrl);
+  const storeUrl = buildUrlWithTracking(CONFIG.playStoreUrl);
   const ctaInstall = document.getElementById("ctaInstall");
   const storeLink = document.getElementById("storeLink");
   ctaInstall.href = storeUrl;
   ctaInstall.addEventListener("click", () => trackCta("install"));
   storeLink.href = storeUrl;
 
-  const privacyLink = document.getElementById("privacyLink");
-  privacyLink.href = CONFIG.privacyUrl;
+  document.getElementById("privacyLink").href = CONFIG.privacyUrl;
+  document.getElementById("supportLink").href = CONFIG.supportUrl;
 
-  const supportLink = document.getElementById("supportLink");
-  supportLink.href = CONFIG.supportUrl;
+  const heroImg = document.getElementById("heroImg");
+  if (heroImg && CONFIG.heroImagePath) heroImg.src = CONFIG.heroImagePath;
 
-  // 유입 표시(있으면)
   const u = new URL(window.location.href);
-  const src = u.searchParams.get("utm_source") || u.searchParams.get("gclid") ? "광고 유입" : "직접 방문";
-  const pill = document.getElementById("sourcePill");
-  pill.textContent = src;
+  const hasAds = !!(u.searchParams.get("gclid") || u.searchParams.get("wbraid") || u.searchParams.get("gbraid"));
+  const src = u.searchParams.get("utm_source") || (hasAds ? "Google Ads" : "직접 방문");
+  document.getElementById("sourcePill").textContent = src;
 
-  // "더 알아보기" 스무스 스크롤
-  document.getElementById("ctaMore").addEventListener("click", (e) => {
-    e.preventDefault();
-    document.getElementById("features").scrollIntoView({behavior:"smooth", block:"start"});
-  });
+  const moreBtn = document.getElementById("ctaMore");
+  const featuresEl = document.getElementById("features");
+  if (moreBtn && featuresEl) {
+    moreBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      featuresEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 </script>
 </body>
 </html>
